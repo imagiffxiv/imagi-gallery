@@ -1,18 +1,18 @@
 <template>
   <div class="gallery-container">
-
     <div class="grid" >
       <div
-          v-for="(image, index) in images"
-          :key="image.name"
-          :class="customStyle(image.type)"
+        v-for="(image, index) in images"
+        :key="image.name"
+        :class="customStyle(image.type)"
+        @click="openImage(index)"
+      >
+        <div 
+          class="grid-item-image"
           :style="{'background-image': 'url('+ image.url+ ')'}"
-          @click="openImage(index)"
-        >
-    
-        </div>
-
+        ></div>
       </div>
+    </div>
 
      
     <!--img
@@ -161,7 +161,7 @@ import imageList from '@/assets/imagelist.json'
 
   }
 </script>
-<style scoped>
+<style scoped lang="scss" >
 
   .gallery-container {
     width: 100%;
@@ -180,14 +180,32 @@ import imageList from '@/assets/imagelist.json'
 
  .grid-item{
 
-  background-position: center;
-  background-size: cover;
+
+  overflow: hidden;
+  cursor: pointer;
+
+  .grid-item-image {
+    width:100%;
+    background-position: center;
+    background-size: cover;
+    height:100%;
+    opacity: 1;
+    margin:0;
+
+    transition: width 0.2s ease-in-out, height 0.2s ease-in-out, opacity 0.2s, margin 0.2s ease-in-out;
+
+    display: block;
+    position: relative;
+    &:hover {
+      
+      margin:-5%;
+      opacity: 0.8;
+      width:110%;
+      height:110%;   
+    }
+  }
  }
 
- .grid-item img{
-  width:100%;
-  height:100%;
- }
 
 .grid-item--height2 { grid-row: span 5; grid-column: span 2 }
 .grid-item--width2 { grid-column: span 4;  grid-row: span 3}
