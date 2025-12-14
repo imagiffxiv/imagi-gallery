@@ -1,4 +1,4 @@
-# kelart
+# imagi-gallery
 
 ## Project setup
 ```
