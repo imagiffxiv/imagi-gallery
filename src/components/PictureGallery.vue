@@ -201,7 +201,8 @@ import imageList from '@/assets/imagelist.json'
       margin:-5%;
       opacity: 0.8;
       width:110%;
-      height:110%;   
+      height:110%;
+      margin-top: -2.5%;
     }
   }
  }
