@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkimagi_gallery"]=self["webpackChunkimagi_gallery"]||[]).push([[443],{7381:function(a,n,e){e.r(n),e.d(n,{default:function(){return f}});var r=e(3396);const u={class:"about"},i=(0,r._)("h1",null,"This is an about page",-1),t=[i];function s(a,n){return(0,r.wg)(),(0,r.iD)("div",u,t)}var l=e(89);const c={},o=(0,l.Z)(c,[["render",s]]);var f=o}}]);
+//# sourceMappingURL=about.1ea600ab.js.map
