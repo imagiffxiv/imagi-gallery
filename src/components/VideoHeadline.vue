@@ -79,6 +79,8 @@ export default {
   width: 100%;
   overflow: hidden;
   height: 85vh;
+  background: url("https://i.ibb.co/L31gFPt/CRITICAL-ERROR.png");
+  background-position: center;
 }
 .videoheadline-video {
     display: flex;
