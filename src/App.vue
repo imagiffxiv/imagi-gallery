@@ -95,6 +95,12 @@ video {
   font-size: 0;
   vertical-align: baseline;
 }
+
+
+html, body, #app, .home {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
 /* HTML5 display-role reset for older browsers */
 article,
 aside,

@@ -72,7 +72,7 @@ export default {
   mounted() {
     
     this.myImg = this.cld.video("mainscreen").toURL();
-
+    console.log(this.cld.api)
   },
   methods: {
     unmute() {

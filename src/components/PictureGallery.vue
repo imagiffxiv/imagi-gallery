@@ -1,16 +1,34 @@
 <template>
   <div class="gallery-container">
-    <div
+
+    <div class="grid" >
+      <div
+          v-for="(image, index) in images"
+          :key="image.name"
+          :class="customStyle(image.type)"
+          :style="{'background-image': 'url('+ image.url+ ')'}"
+          @click="openImage(index)"
+        >
+    
+        </div>
+
+      </div>
+
+     
+    <!--img
       class="gallery-image"
       v-for="image, imageIndex in images"
       :key="imageIndex"
       @click="openImage(imageIndex)"
-      :style="{ backgroundImage: 'url(' + image.thumbnailUrl + ')', ...image.addStyle}"
-    />
+      :src="image.url" 
+      :style="imageCustomStyle(image)"
+      /-->
+
+      
 
     <div
       class="imageViewer visible"
-      v-if="selectedImage"
+      v-if="images[selectedImageIndex]"
     >
       <div class="shadow" />
       <div class="container">
@@ -18,7 +36,7 @@
           <div class="imageContainer">
             <img
               class="image"
-              :src="images[selectedImage]?.mainUrl"
+              :src="images[selectedImageIndex].url"
             >
           </div>
         </div>
@@ -26,6 +44,7 @@
           <button
             class="defaultButton closeButton"
             title="Close"
+            @click="closeImage()"
           >
             <div>
               <svg
@@ -41,7 +60,7 @@
             </div>
           </button>
         </div>
-        <button class="arrowButton leftButton">
+        <button class="arrowButton leftButton" @click="previous()">
           <div>
             <svg
               fill="none"
@@ -56,7 +75,7 @@
             ><polyline points="15 18 9 12 15 6" /></svg>
           </div>
         </button>
-        <button class="arrowButton rightButton">
+        <button class="arrowButton rightButton"  @click="next()">
           <div>
             <svg
               fill="none"
@@ -77,269 +96,66 @@
 </template>
 
 <script>
-import ImageViewer from 'awesome-image-viewer'  
+import imageList from '@/assets/imagelist.json'
+
+
+
   export default {
     data() {
+
       return {
-        images: [{ mainUrl: "https://i.postimg.cc/9fCbFRPh/admire.png",
- thumbnailUrl: "https://i.postimg.cc/9fCbFRPh/admire.png", 
- description: "admire" },
-{ mainUrl: "https://i.postimg.cc/RhNX5k7J/allagan.png",
- thumbnailUrl: "https://i.postimg.cc/RhNX5k7J/allagan.png", 
- description: "allagan" },
-{ mainUrl: "https://i.postimg.cc/25GwqkTB/angel.png",
- thumbnailUrl: "https://i.postimg.cc/25GwqkTB/angel.png", 
- description: "angel" },
-{ mainUrl: "https://i.postimg.cc/J72pch8N/anora.png",
- thumbnailUrl: "https://i.postimg.cc/J72pch8N/anora.png", 
- description: "anora" },
-{ mainUrl: "https://i.postimg.cc/W347gBfY/arcana.png",
- thumbnailUrl: "https://i.postimg.cc/W347gBfY/arcana.png", 
- description: "arcana" },
-{ mainUrl: "https://i.postimg.cc/WpBHc4y2/azem.png",
- thumbnailUrl: "https://i.postimg.cc/WpBHc4y2/azem.png", 
- description: "azem" },
-{ mainUrl: "https://i.postimg.cc/KvhJsHKj/babe.png",
- thumbnailUrl: "https://i.postimg.cc/KvhJsHKj/babe.png", 
- description: "babe" },
-{ mainUrl: "https://i.postimg.cc/htrym1tj/barcode.png",
- thumbnailUrl: "https://i.postimg.cc/htrym1tj/barcode.png", 
- description: "barcode" },
-{ mainUrl: "https://i.postimg.cc/zG07vDxH/basic.png",
- thumbnailUrl: "https://i.postimg.cc/zG07vDxH/basic.png", 
- description: "basic" },
-{ mainUrl: "https://i.postimg.cc/8cJBnhGh/beach.png",
- thumbnailUrl: "https://i.postimg.cc/8cJBnhGh/beach.png", 
- description: "beach" },
-{ mainUrl: "https://i.postimg.cc/L4ncMw6V/belial.png",
- thumbnailUrl: "https://i.postimg.cc/L4ncMw6V/belial.png", 
- description: "belial" },
-{ mainUrl: "https://i.postimg.cc/s2HT6fSC/black-white-aura.png",
- thumbnailUrl: "https://i.postimg.cc/s2HT6fSC/black-white-aura.png", 
- description: "black-white-aura" },
-{ mainUrl: "https://i.postimg.cc/c1gbz3X9/blackwork.png",
- thumbnailUrl: "https://i.postimg.cc/c1gbz3X9/blackwork.png", 
- description: "blackwork" },
-{ mainUrl: "https://i.postimg.cc/W12SsqwP/blur.jpg",
- thumbnailUrl: "https://i.postimg.cc/W12SsqwP/blur.jpg", 
- description: "blur" },
-{ mainUrl: "https://i.postimg.cc/rsrZt6DX/buff.png",
- thumbnailUrl: "https://i.postimg.cc/rsrZt6DX/buff.png", 
- description: "buff" },
-{ mainUrl: "https://i.postimg.cc/DzNcQjk2/catber.png",
- thumbnailUrl: "https://i.postimg.cc/DzNcQjk2/catber.png", 
- description: "catber" },
-{ mainUrl: "https://i.postimg.cc/8zDXs0D9/classy.png",
- thumbnailUrl: "https://i.postimg.cc/8zDXs0D9/classy.png", 
- description: "classy" },
-{ mainUrl: "https://i.postimg.cc/MK1r6Sk1/cleo.png",
- thumbnailUrl: "https://i.postimg.cc/MK1r6Sk1/cleo.png", 
- description: "cleo" },
-{ mainUrl: "https://i.postimg.cc/zfGdFHyk/cult.png",
- thumbnailUrl: "https://i.postimg.cc/zfGdFHyk/cult.png", 
- description: "cult" },
-{ mainUrl: "https://i.postimg.cc/j5GZT8Z8/death.png",
- thumbnailUrl: "https://i.postimg.cc/j5GZT8Z8/death.png", 
- description: "death" },
-{ mainUrl: "https://i.postimg.cc/1RqvBQ3b/demon.png",
- thumbnailUrl: "https://i.postimg.cc/1RqvBQ3b/demon.png", 
- description: "demon" },
-{ mainUrl: "https://i.postimg.cc/nzs068Yj/diamond.png",
- thumbnailUrl: "https://i.postimg.cc/nzs068Yj/diamond.png", 
- description: "diamond" },
-{ mainUrl: "https://i.postimg.cc/hvTMt9YK/draenei.png",
- thumbnailUrl: "https://i.postimg.cc/hvTMt9YK/draenei.png", 
- description: "draenei" },
-{ mainUrl: "https://i.postimg.cc/LXZ3xt2j/dream.png",
- thumbnailUrl: "https://i.postimg.cc/LXZ3xt2j/dream.png", 
- description: "dream" },
-{ mainUrl: "https://i.postimg.cc/VvqB8zS6/edbun.png",
- thumbnailUrl: "https://i.postimg.cc/VvqB8zS6/edbun.png", 
- description: "edbun" },
-{ mainUrl: "https://i.postimg.cc/wT50KQJV/elekel.png",
- thumbnailUrl: "https://i.postimg.cc/wT50KQJV/elekel.png", 
- description: "elekel" },
-{ mainUrl: "https://i.postimg.cc/D0kdHSwH/evelynn.png",
- thumbnailUrl: "https://i.postimg.cc/D0kdHSwH/evelynn.png", 
- description: "evelynn" },
-{ mainUrl: "https://i.postimg.cc/J0xDx0Db/evo.png",
- thumbnailUrl: "https://i.postimg.cc/J0xDx0Db/evo.png", 
- description: "evo" },
-{ mainUrl: "https://i.postimg.cc/ZKmxLvgy/femboyra.png",
- thumbnailUrl: "https://i.postimg.cc/ZKmxLvgy/femboyra.png", 
- description: "femboyra" },
-{ mainUrl: "https://i.postimg.cc/Wb76YbLY/feral.png",
- thumbnailUrl: "https://i.postimg.cc/Wb76YbLY/feral.png", 
- description: "feral" },
-{ mainUrl: "https://i.postimg.cc/qvbc0b78/fishaura.png",
- thumbnailUrl: "https://i.postimg.cc/qvbc0b78/fishaura.png", 
- description: "fishaura" },
-{ mainUrl: "https://i.postimg.cc/C5sD2Jtn/galaxy.png",
- thumbnailUrl: "https://i.postimg.cc/C5sD2Jtn/galaxy.png", 
- description: "galaxy" },
-{ mainUrl: "https://i.postimg.cc/BnQ5r9JS/genes.png",
- thumbnailUrl: "https://i.postimg.cc/BnQ5r9JS/genes.png", 
- description: "genes" },
-{ mainUrl: "https://i.postimg.cc/Wpg7rw9v/greee.png",
- thumbnailUrl: "https://i.postimg.cc/Wpg7rw9v/greee.png", 
- description: "greee" },
-{ mainUrl: "https://i.postimg.cc/HxCrCXbw/grey.png",
- thumbnailUrl: "https://i.postimg.cc/HxCrCXbw/grey.png", 
- description: "grey" },
-{ mainUrl: "https://i.postimg.cc/5tDwQXLy/hunter.png",
- thumbnailUrl: "https://i.postimg.cc/5tDwQXLy/hunter.png", 
- description: "hunter" },
-{ mainUrl: "https://i.postimg.cc/kX7WS36Q/idk.png",
- thumbnailUrl: "https://i.postimg.cc/kX7WS36Q/idk.png", 
- description: "idk" },
-{ mainUrl: "https://i.postimg.cc/7hk0XjBy/illidari.png",
- thumbnailUrl: "https://i.postimg.cc/7hk0XjBy/illidari.png", 
- description: "illidari" },
-{ mainUrl: "https://i.postimg.cc/g0xV0Vw1/imagi.png",
- thumbnailUrl: "https://i.postimg.cc/g0xV0Vw1/imagi.png", 
- description: "imagi" },
-{ mainUrl: "https://i.postimg.cc/59BwjN09/iris.png",
- thumbnailUrl: "https://i.postimg.cc/59BwjN09/iris.png", 
- description: "iris" },
-{ mainUrl: "https://i.postimg.cc/9MGq4Jcg/ivory.png",
- thumbnailUrl: "https://i.postimg.cc/9MGq4Jcg/ivory.png", 
- description: "ivory" },
-{ mainUrl: "https://i.postimg.cc/PqDCc2vf/jade.png",
- thumbnailUrl: "https://i.postimg.cc/PqDCc2vf/jade.png", 
- description: "jade" },
-{ mainUrl: "https://i.postimg.cc/jd8nJWrT/kel.png",
- thumbnailUrl: "https://i.postimg.cc/jd8nJWrT/kel.png", 
- description: "kel" },
-{ mainUrl: "https://i.postimg.cc/bJ8w58jL/kel2.png",
- thumbnailUrl: "https://i.postimg.cc/bJ8w58jL/kel2.png", 
- description: "kel2" },
-{ mainUrl: "https://i.postimg.cc/sgXSnYJ1/killerbun.png",
- thumbnailUrl: "https://i.postimg.cc/sgXSnYJ1/killerbun.png", 
- description: "killerbun" },
-{ mainUrl: "https://i.postimg.cc/sxsG57Xj/koi.png",
- thumbnailUrl: "https://i.postimg.cc/sxsG57Xj/koi.png", 
- description: "koi" },
-{ mainUrl: "https://i.postimg.cc/Y2zWMnnh/lava.png",
- thumbnailUrl: "https://i.postimg.cc/Y2zWMnnh/lava.png", 
- description: "lava" },
-{ mainUrl: "https://i.postimg.cc/bwWG3KJF/lizkel.png",
- thumbnailUrl: "https://i.postimg.cc/bwWG3KJF/lizkel.png", 
- description: "lizkel" },
-{ mainUrl: "https://i.postimg.cc/VLH5k3jL/lizkel2.png",
- thumbnailUrl: "https://i.postimg.cc/VLH5k3jL/lizkel2.png", 
- description: "lizkel2" },
-{ mainUrl: "https://i.postimg.cc/KvcgzPwQ/lost.png",
- thumbnailUrl: "https://i.postimg.cc/KvcgzPwQ/lost.png", 
- description: "lost" },
-{ mainUrl: "https://i.postimg.cc/442X6pnW/love.png",
- thumbnailUrl: "https://i.postimg.cc/442X6pnW/love.png", 
- description: "love" },
-{ mainUrl: "https://i.postimg.cc/BnXL5qqK/miss.png",
- thumbnailUrl: "https://i.postimg.cc/BnXL5qqK/miss.png", 
- description: "miss" },
-{ mainUrl: "https://i.postimg.cc/3RCdrNZP/nerdy.png",
- thumbnailUrl: "https://i.postimg.cc/3RCdrNZP/nerdy.png", 
- description: "nerdy" },
-{ mainUrl: "https://i.postimg.cc/7YCwmb2w/oraora.png",
- thumbnailUrl: "https://i.postimg.cc/7YCwmb2w/oraora.png", 
- description: "oraora" },
-{ mainUrl: "https://i.postimg.cc/8cps7GKs/paint.png",
- thumbnailUrl: "https://i.postimg.cc/8cps7GKs/paint.png", 
- description: "paint" },
-{ mainUrl: "https://i.postimg.cc/4d5xkMfG/pinker.png",
- thumbnailUrl: "https://i.postimg.cc/4d5xkMfG/pinker.png", 
- description: "pinker" },
-{ mainUrl: "https://i.postimg.cc/c1hrVKC3/princess.png",
- thumbnailUrl: "https://i.postimg.cc/c1hrVKC3/princess.png", 
- description: "princess" },
-{ mainUrl: "https://i.postimg.cc/C5c5D2X7/rave.png",
- thumbnailUrl: "https://i.postimg.cc/C5c5D2X7/rave.png", 
- description: "rave" },
-{ mainUrl: "https://i.postimg.cc/fT6ZFZcX/reddit.png",
- thumbnailUrl: "https://i.postimg.cc/fT6ZFZcX/reddit.png", 
- description: "reddit" },
-{ mainUrl: "https://i.postimg.cc/BnKZQtSM/renegade.png",
- thumbnailUrl: "https://i.postimg.cc/BnKZQtSM/renegade.png", 
- description: "renegade" },
-{ mainUrl: "https://i.postimg.cc/Z58kMNKt/rgb.jpg",
- thumbnailUrl: "https://i.postimg.cc/Z58kMNKt/rgb.jpg", 
- description: "rgb" },
-{ mainUrl: "https://i.postimg.cc/nz0pwD2c/rock.png",
- thumbnailUrl: "https://i.postimg.cc/nz0pwD2c/rock.png", 
- description: "rock" },
-{ mainUrl: "https://i.postimg.cc/hjSKrr95/saturn.png",
- thumbnailUrl: "https://i.postimg.cc/hjSKrr95/saturn.png", 
- description: "saturn" },
-{ mainUrl: "https://i.postimg.cc/tJsQSm72/scorp.png",
- thumbnailUrl: "https://i.postimg.cc/tJsQSm72/scorp.png", 
- description: "scorp" },
-{ mainUrl: "https://i.postimg.cc/13wP1TBd/seduce.png",
- thumbnailUrl: "https://i.postimg.cc/13wP1TBd/seduce.png", 
- description: "seduce" },
-{ mainUrl: "https://i.postimg.cc/Bbb4Wn75/steampunk.png",
- thumbnailUrl: "https://i.postimg.cc/Bbb4Wn75/steampunk.png", 
- description: "steampunk" },
-{ mainUrl: "https://i.postimg.cc/6qPwBxFk/strengh.png",
- thumbnailUrl: "https://i.postimg.cc/6qPwBxFk/strengh.png", 
- description: "strengh" },
-{ mainUrl: "https://i.postimg.cc/nrN86YDZ/summer.png",
- thumbnailUrl: "https://i.postimg.cc/nrN86YDZ/summer.png", 
- description: "summer" },
-{ mainUrl: "https://i.postimg.cc/5tJJ43k2/tame.png",
- thumbnailUrl: "https://i.postimg.cc/5tJJ43k2/tame.png", 
- description: "tame" },
-{ mainUrl: "https://i.postimg.cc/QMm2XrTf/tatootriple.png",
- thumbnailUrl: "https://i.postimg.cc/QMm2XrTf/tatootriple.png", 
- description: "tatootriple" },
-{ mainUrl: "https://i.postimg.cc/DZj3cKfS/tribal.png",
- thumbnailUrl: "https://i.postimg.cc/DZj3cKfS/tribal.png", 
- description: "tribal" },
-{ mainUrl: "https://i.postimg.cc/cJcSrnVM/under.png",
- thumbnailUrl: "https://i.postimg.cc/cJcSrnVM/under.png", 
- description: "under" },
-{ mainUrl: "https://i.postimg.cc/TPT8MPpy/valky.png",
- thumbnailUrl: "https://i.postimg.cc/TPT8MPpy/valky.png", 
- description: "valky" },
-{ mainUrl: "https://i.postimg.cc/0yRRnnv0/vampy.png",
- thumbnailUrl: "https://i.postimg.cc/0yRRnnv0/vampy.png", 
- description: "vampy" },
-{ mainUrl: "https://i.postimg.cc/1tWJdmqZ/yorr.png",
- thumbnailUrl: "https://i.postimg.cc/1tWJdmqZ/yorr.png", 
- description: "yorr" },
-{ mainUrl: "https://i.postimg.cc/CLfpbt3K/ver.png",
- thumbnailUrl: "https://i.postimg.cc/CLfpbt3K/ver.png", 
- description: "ver" },
-{ mainUrl: "https://i.postimg.cc/G3f18rSN/veridian.png",
- thumbnailUrl: "https://i.postimg.cc/G3f18rSN/veridian.png", 
- description: "veridian" },
-{ mainUrl: "https://i.postimg.cc/1tzLXY0s/what.png",
- thumbnailUrl: "https://i.postimg.cc/1tzLXY0s/what.png", 
- description: "what" },
-{ mainUrl: "https://i.postimg.cc/nzV3TjMk/whata.png",
- thumbnailUrl: "https://i.postimg.cc/nzV3TjMk/whata.png", 
- description: "whata" },
-{ mainUrl: "https://i.postimg.cc/yY3vfz6w/zen.png",
- thumbnailUrl: "https://i.postimg.cc/yY3vfz6w/zen.png", 
- description: "zen" },
-{ mainUrl: "https://i.postimg.cc/LXhb2gRs/yolo.png",
- thumbnailUrl: "https://i.postimg.cc/LXhb2gRs/yolo.png", 
- description: "yolo" },
-        ],
-        selectedImage: null
-      };
+        images: imageList.images.sort(() => Math.random() - 0.5).sort(() => Math.random() - 0.5).sort(() => Math.random() - 0.5),
+        selectedImageIndex: null,
+        isotope: null,
+      }
     },
 
+ 
 
     methods: {
-      openImage(selectedImage) {
-        this.selectedImage = selectedImage;
-        
+     
+      openImage(index) {
+        this.selectedImageIndex = index;
+      },
 
+      closeImage(){
+        this.selectedImageIndex = null;
+      }, 
 
-      //   new ImageViewer({
-      //    images: this.images,
-      //    currentSelected: this.selectedImage,
-      //  })
+      next(){
+        if (this.selectedImageIndex === this.images.length) {
+          this.selectedImageIndex = 0;
+        } else {
+          this.selectedImageIndex = this.selectedImageIndex + 1;
+        }
+      },
+      previous() {
+        if (this.selectedImageIndex === 0) {
+          this.selectedImageIndex = this.images.length;
+        } else {
+          this.selectedImageIndex = this.selectedImageIndex - 1;
+        }
+      }, 
+
+      preview(){
+        this.selectedImageIndex = null;
+      }, 
+
+      customStyle(type){
+        const baseClass = ["grid-item"]
+
+        if (type === "square"){
+          return [...baseClass, "grid-item--square" ,]
+        } else if (type === "landscape"){
+          return [...baseClass, "grid-item--width2",]
+        } else if (type === "portrait"){
+          return [...baseClass, "grid-item--height2"]
+        } else if (type === "ultrawide"){
+          return [...baseClass, "grid-item--width3",]
+        } else if (type === "gigawide"){
+          return [...baseClass, "grid-item--width4",]
+        }
+        return baseClass
       }
     }
 
@@ -354,39 +170,32 @@ import ImageViewer from 'awesome-image-viewer'
     background: black;
             
   }
+.grid {
+ display: grid;
 
-  .gallery-container::-webkit-scrollbar {
-    height: 0px;
-  }
+  grid-template-columns: repeat(auto-fit, minmax(12.5vw, 1fr));
+  grid-auto-rows: 9vw;
+  grid-auto-flow: dense;
+}
 
-  .gallery-offsetter {
-    height: 400px;
-    text-align: left;
-    position: relative;
-    
-  }
+ .grid-item{
 
-  .spacer {
-    height: 200px;
-    display: inline-block;
-    position: relative;
-    width: 177.5px;
-    flex-grow: 1;
-  }
+  background-position: center;
+  background-size: cover;
+ }
 
-  .gallery-image {  
-    max-height: 355px;
-    position: relative;
-    display: inline-block;
-    max-width: 355px;
-    height: 100vh;
-    width: 100vw;
-    cursor: pointer;
-    box-sizing: border-box;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-  }
+ .grid-item img{
+  width:100%;
+  height:100%;
+ }
+
+.grid-item--height2 { grid-row: span 5; grid-column: span 2 }
+.grid-item--width2 { grid-column: span 4;  grid-row: span 3}
+.grid-item--square { grid-row: span 5;  grid-column: span 4}
+.grid-item--width3 { grid-column: span 8; grid-row: span 4}
+.grid-item--width4 { grid-column: span 8; grid-row: span 5}
+
+
 
   .preview {
     width: 100%;
