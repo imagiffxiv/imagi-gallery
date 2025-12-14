@@ -22,19 +22,9 @@
           IMAGI
         </div>
       </div>
-      <div class="videoheadline-socials-wrapper">
-        <div class="videoheadline-socials">
-          <a href="https://www.instagram.com/imagi_ffxiv/">
-            <Icon
-              icon="bi:instagram"
-              class="insta-icon"
-            />
-          </a>
-        </div>
-      </div>
     </div>
 
-    <button
+    <!--button
       class="videoheadline-mute"
       @click="unmute"
     >
@@ -45,16 +35,16 @@
         icon="bi:volume-up"
         v-if="!muted"
       />
-    </button>
+    </button-->
   </div>
 </template>
 
 <script>
-import { Icon } from "@iconify/vue";
+// import { Icon } from "@iconify/vue";
 
 
 export default {
-  components: { Icon },
+  components: { /*Icon*/ },
 
   props: {
     cld: {
